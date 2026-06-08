@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guido La Sorda - Shutdown Operativo</title>
+    <!-- Tailwind per il layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js per le statistiche -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F2F5;
+            color: #2C3E50;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 300px;
+        }
+
+        .terminal-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor { animation: blink 1s infinite; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-in { animation: slideIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- Header Section -->
+        <header class="bg-[#2C3E50] text-white p-6 rounded-t-xl terminal-shadow">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h1 class="text-3xl font-bold mono uppercase tracking-tighter leading-tight">
+                        <span class="text-green-500">Caricamento Pensione</span><br>Guido 65.0
+                    </h1>
+                    <p class="text-blue-300 mono mt-2">Status: pensionamento in corso...</p>
+                </div>
+                <div class="mt-4 md:mt-0 text-right">
+                    <span class="bg-green-500 text-black px-3 py-1 rounded text-sm font-bold animate-pulse">OFFLINE DAL 04/07</span>
+                </div>
+            </div>
+            <div class="mt-6 border-l-4 border-green-500 pl-4 py-2 bg-black bg-opacity-30">
+                <p class="italic text-gray-300">"Il ponte radio è stato interrotto. Il segnale ora punta dritto verso il Vecchio Mulino."</p>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Section: Statistiche di Carico -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-xl font-semibold mb-4 flex items-center text-blue-900">
+                    <span class="mr-2 text-2xl">📊</span> Ottimizzazione Risorse
+                </h2>
+                <p class="text-sm text-gray-600 mb-6 not-italic font-normal">
+                    Questa sezione analizza la variazione dell'allocazione del tempo di Guido. Il sistema rileva un crollo verticale della larghezza di banda dedicata a calcoli e cravatte, a favore di carboidrati e pisolini.
+                </p>
+                <div class="chart-container">
+                    <canvas id="resourceChart"></canvas>
+                </div>
+                <div class="mt-6 text-center">
+                    <button onclick="updateChart(this)" class="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-md transition transform active:scale-95 flex items-center justify-center uppercase tracking-wide">
+                        <span class="mr-2 text-lg">🏖️</span> Simula Pensionamento
+                    </button>
+                </div>
+            </section>
+
+            <!-- Section: Interazione Abbigliamento -->
+            <section class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 flex items-center text-blue-900">
+                        <span class="mr-2 text-2xl">👔</span> Protocollo "No-Tie"
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-6">
+                        Guido sta procedendo alla disconnessione fisica dagli hardware aziendali (giacche, cravatte, badge). Clicca sul pulsante per avviare il decoupling definitivo.
+                    </p>
+                </div>
+                
+                <div id="outfitDisplay" class="text-center p-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl mb-4 transition-colors duration-500">
+                    <div id="outfitIcon" class="text-7xl mb-4 transform transition-transform duration-500 hover:scale-110">🤵</div>
+                    <div id="outfitStatus" class="font-bold text-red-600 tracking-wider">MODALITÀ BUSINESS: ON</div>
+                </div>
+
+                <button id="toggleOutfit" class="w-full h-12 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded-lg shadow-md transition transform active:scale-95 flex items-center justify-center uppercase tracking-wide">
+                    <span class="mr-2 text-lg">✂️</span> Taglia la Cravatta!
+                </button>
+            </section>
+
+        </main>
+
+        <!-- Logistics Section (The "Radio Coordinates") -->
+        <section class="bg-white p-8 rounded-xl shadow-md border border-gray-200 relative overflow-hidden">
+            <!-- Decorative background element -->
+            <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            </div>
+            
+            <h2 class="text-2xl font-bold mb-8 text-center text-blue-900 border-b-2 border-gray-100 pb-4">📍 Specifiche Tecniche Festeggiamento</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Riquadro Calendario -->
+                <div class="p-5 bg-blue-50 rounded-xl border-l-4 border-blue-500 shadow-sm transition hover:shadow-md flex flex-col">
+                    <h3 class="font-bold text-blue-800 uppercase text-xs mb-2 flex items-center"><span class="mr-1">🕒</span> Data e Ora</h3>
+                    <p class="text-xl text-gray-800">Sabato 4 Luglio</p>
+                    <p class="text-2xl font-extrabold text-blue-900 mt-1">Ore 19:30</p>
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pensionamento+di+Guido&details=Celebrazione+del+System+Shutdown&location=Agriturismo+Alla+Sorgente+del+Vecchio+Mulino,+Limatola,+BN&dates=20260704T193000/20260704T233000&ctz=Europe/Rome" target="_blank" class="mt-auto pt-4 inline-block w-full">
+                        <button class="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow transition flex items-center justify-center">
+                            <span class="mr-2">📅</span> Aggiungi al Calendario
+                        </button>
+                    </a>
+                </div>
+                
+                <!-- Riquadro Maps -->
+                <div class="p-5 bg-green-50 rounded-xl border-l-4 border-green-500 shadow-sm transition hover:shadow-md flex flex-col">
+                    <h3 class="font-bold text-green-800 uppercase text-xs mb-2 flex items-center"><span class="mr-1">📡</span> Cella di Ricezione</h3>
+                    <p class="text-lg font-semibold text-gray-800">Agriturismo "Alla Sorgente del Vecchio Mulino"</p>
+                    <p class="text-sm text-gray-600 mt-2 font-medium">Limatola (BN) - Via Cisterna snc</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Agriturismo+Alla+Sorgente+del+Vecchio+Mulino+Limatola" target="_blank" class="mt-auto pt-4 inline-block w-full">
+                        <button class="w-full h-11 bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow transition flex items-center justify-center">
+                            <span class="mr-2">📍</span> Apri in Maps
+                        </button>
+                    </a>
+                </div>
+                
+                <!-- Riquadro WhatsApp -->
+                <div class="p-5 bg-amber-50 rounded-xl border-l-4 border-amber-500 shadow-sm transition hover:shadow-md flex flex-col">
+                    <h3 class="font-bold text-amber-800 uppercase text-xs mb-2 flex items-center"><span class="mr-1">📶</span> Potenza Segnale (RSVP)</h3>
+                    <p class="text-sm text-gray-700 mb-3 font-medium">Confermare la presenza per garantire la copertura del banchetto.</p>
+                    <a href="https://chat.whatsapp.com/Fx0xseHtM7p2Qzjf4rs10y" target="_blank" class="mt-auto pt-4 inline-block w-full">
+                        <button class="w-full h-11 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold py-2 px-4 rounded-lg shadow transition flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                            Conferma
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / Call to Action -->
+        <footer class="text-center pb-12 pt-4">
+            <p class="text-gray-500 mono text-sm mb-6 bg-gray-200 inline-block px-4 py-1 rounded-full">
+                > guido_pensionamento.exe --force --no-regrets <span class="cursor font-bold">_</span>
+            </p>
+            <div class="flex justify-center space-x-6">
+                <div class="text-4xl transform hover:scale-125 transition-transform cursor-help" title="Fase 1: Brindisi">🍷</div>
+                <div class="text-4xl transform hover:scale-125 transition-transform cursor-help" title="Fase 2: Riposo Assoluto">💤</div>
+                <div class="text-4xl transform hover:scale-125 transition-transform cursor-help" title="Fase 3: Niente più ponti radio">📻</div>
+            </div>
+            <p class="mt-8 text-xl font-bold text-gray-800">
+                Non mancate, prima che il segnale sparisca del tutto!
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Modale Finto Alert Browser -->
+    <div id="customAlertModal" class="hidden fixed inset-0 bg-black bg-opacity-30 z-50 flex items-start justify-center pt-32 transition-opacity">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-[400px] mx-4 border border-gray-200">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3 font-sans">Questa pagina dice</h3>
+                <p class="text-[15px] text-gray-800 font-sans leading-relaxed">ERRORE DI SISTEMA: Impossibile riallacciare la cravatta dopo il 4 luglio.</p>
+                <div class="mt-8 flex justify-end">
+                    <button onclick="closeAlert()" class="bg-[#0b57d0] hover:bg-[#0842a0] text-white px-6 py-2 rounded-full font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b57d0] transition-colors">
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage per il grafico
+        const labels = ['Cravatte', 'Radio Link', 'Cibo', 'Pisolini', 'Stress'];
+        let dataWork = [50, 90, 60, 10, 100];
+        let dataPension = [0, 0, 100, 100, 10];
+
+        // Inizializzazione Chart.js
+        const ctx = document.getElementById('resourceChart').getContext('2d');
+        const resourceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Livello Attuale (%)',
+                    data: dataWork,
+                    backgroundColor: [
+                        'rgba(231, 76, 60, 0.8)',  // Rosso (Cravatte)
+                        'rgba(52, 152, 219, 0.8)', // Blu (Radio)
+                        'rgba(46, 204, 113, 0.8)', // Verde (Vino/Cibo)
+                        'rgba(241, 196, 15, 0.8)', // Giallo (Pisolini)
+                        'rgba(149, 165, 166, 0.8)' // Grigio (Stress)
+                    ],
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.raw + '%';
+                            }
+                        }
+                    }
+                },
+                animation: { duration: 1500, easing: 'easeOutQuart' }
+            }
+        });
+
+        // Funzione: Aggiornamento Grafico (Simula Pensionamento)
+        function updateChart(btn) {
+            resourceChart.data.datasets[0].data = dataPension;
+            resourceChart.data.datasets[0].label = 'Livello Post-Pensionamento (%)';
+            resourceChart.update();
+            
+            // Feedback visivo sul bottone
+            btn.innerHTML = '<span class="mr-2 text-lg">✅</span> Ottimizzazione Completata';
+            btn.classList.replace('bg-blue-600', 'bg-green-600');
+            btn.classList.replace('hover:bg-blue-700', 'hover:bg-green-700');
+            btn.disabled = true;
+            btn.classList.add('cursor-not-allowed', 'opacity-90');
+        }
+
+        // Funzione: Interazione Abbigliamento (Taglio Cravatta)
+        const toggleBtn = document.getElementById('toggleOutfit');
+        const outfitDisplay = document.getElementById('outfitDisplay');
+        const outfitIcon = document.getElementById('outfitIcon');
+        const outfitStatus = document.getElementById('outfitStatus');
+        const customAlertModal = document.getElementById('customAlertModal');
+        let isFormal = true;
+
+        toggleBtn.addEventListener('click', () => {
+            if (isFormal) {
+                // Esegui la transizione a pensionato
+                outfitIcon.innerText = "👕";
+                outfitStatus.innerText = "MODALITÀ PENSIONATO: ATTIVA";
+                outfitStatus.classList.replace('text-red-600', 'text-green-600');
+                
+                // Aggiorna bottone
+                toggleBtn.innerHTML = '<span class="mr-2 text-lg">🔄</span> RIATTIVA CRAVATTA';
+                toggleBtn.classList.replace('bg-red-500', 'bg-gray-600');
+                toggleBtn.classList.replace('hover:bg-red-600', 'hover:bg-gray-700');
+                
+                // Aggiorna sfondo display
+                outfitDisplay.classList.replace('bg-gray-50', 'bg-green-50');
+                outfitDisplay.classList.replace('border-gray-300', 'border-green-300');
+                
+                isFormal = false;
+            } else {
+                // Mostra il modale personalizzato stile browser
+                customAlertModal.classList.remove('hidden');
+            }
+        });
+
+        function closeAlert() {
+            customAlertModal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
